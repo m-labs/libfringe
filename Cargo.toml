@@ -9,7 +9,7 @@ repository = "https://github.com/edef1c/libfringe"
 documentation = "https://edef1c.github.io/libfringe"
 
 [target.'cfg(unix)'.dependencies]
-libc = "0.2.14"
+libc = { version = "0.2.14", default-features = false }
 
 [dependencies.valgrind_request]
 optional = true
