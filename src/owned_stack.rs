@@ -4,7 +4,8 @@
 extern crate alloc;
 
 use core::slice;
-use self::alloc::heap::{Layout, Alloc, Heap};
+use core::alloc::Alloc;
+use self::alloc::alloc::{Layout, Global};
 use self::alloc::boxed::Box;
 
 /// OwnedStack holds a non-guarded, heap-allocated stack.
@@ -17,9 +18,8 @@ impl OwnedStack {
     pub fn new(size: usize) -> OwnedStack {
         unsafe {
             let aligned_size = size & !(::STACK_ALIGNMENT - 1);
-            let layout = Layout::from_size_align(aligned_size, ::STACK_ALIGNMENT).unwrap();
-            let ptr = Heap.alloc(layout).unwrap();
-            OwnedStack(Box::from_raw(slice::from_raw_parts_mut(ptr, aligned_size)))
+            let ptr = Global.alloc(Layout::from_size_align_unchecked(aligned_size, ::STACK_ALIGNMENT)).unwrap();
+            OwnedStack(Box::from_raw(slice::from_raw_parts_mut(ptr.as_ptr() as *mut u8, aligned_size)))
         }
     }
 }
